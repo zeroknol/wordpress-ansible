@@ -4,7 +4,7 @@
   apt: name={{ item }}
   with_items:
   - redis-server
-  - php5-redis
+  - php-redis
 
 - name: Disable Redis server from starting on boot
   service: name=redis-server state=stopped enabled=no

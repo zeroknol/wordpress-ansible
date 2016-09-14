@@ -1,12 +1,9 @@
 ---
-- name: First apt-get update
-  command: apt-get update 
-
-- name: install python-apt (required to ansible apt module)
-  command: apt-get install python-apt -y
+- name: install python 2
+  raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
 
 - name: Update Apt
-  apt: update_cache=yes
+  apt: update_cache=yes cache_valid_time=7200
 
 - name: Generate locale
   locale_gen: name="en_US.UTF-8" state=present
@@ -33,6 +30,7 @@
   - htop
   - screen
   - unzip
+  - tmux
 
 - name: Install system packages
   apt: name="{{ item }}" state=present

@@ -1,13 +1,9 @@
 ---
 
-- name: Download WP-CLI
-  shell: curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+- name: download wp-cli
+  become: yes
+  get_url: url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar dest=/usr/local/bin/wp
 
-- name: Make WP-CLI executable
-  file:
-    path: /root/wp-cli.phar
-    mode: u=rwx,g=rx,o=rx
-
-- name: Move WP-CLI to /usr/local/bin/wp
-  command: mv /root/wp-cli.phar /usr/local/bin/wp
+- name: update permissions of wp-cli to allow anyone to execute it (should be only for local install!)
+  file: path=/usr/local/bin/wp mode="0755"
 

@@ -2,7 +2,8 @@
 - name: WordPress with default theme and no dummy data.
 
   hosts: webservers
-  remote_user: deploy
+  remote_user: {{ sudo_user }}
+  become: true
 
   roles:
     - reset-wordpress

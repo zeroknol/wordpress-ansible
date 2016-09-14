@@ -29,7 +29,7 @@
   command: wp core download
   args:
       chdir: "{{ remote_wordpress_dir }}/"
-  remote_user: "{{ remote_deploy_user }}"
+  become_user: "{{ remote_deploy_user }}"
   when: wp_dir.stat.isdir is not defined
 
 - name: Configure WordPress
@@ -39,18 +39,20 @@
            --dbuser="{{ wordpress_db_user }}"
            --dbpass="{{ wordpress_db_user_pass }}"
            --dbprefix="{{ wordpress_db_prefix }}"
-  remote_user: "{{ remote_deploy_user }}"
+  become_user: "{{ remote_deploy_user }}"
   when: wp_dir.stat.isdir is not defined
 
 - name: Is WordPress installed?
   command: wp core is-installed
+  become_user: "{{ remote_deploy_user }}"
   args:
     chdir: "{{ remote_wordpress_dir }}/"
   register: wordpress_is_installed
   ignore_errors: True
-  remote_user: "{{ remote_deploy_user }}"
 
 - name: Install WordPress tables
+  become: true
+  become_user: "{{ remote_deploy_user }}"
   command: wp core install
             --url="{{ wordpress_home_url }}"
             --title="{{ wordpress_site_title }}"
@@ -60,28 +62,35 @@
   args:
       chdir: "{{ remote_wordpress_dir }}/"
   when: wordpress_is_installed|failed
-  remote_user: "{{ remote_deploy_user }}"
 
 - name: Install WordPress theme
+  become: true
+  become_user: "{{ remote_deploy_user }}"
   command: "wp theme install {{ wordpress_theme }} --activate"
   args:
     chdir: "{{ remote_wordpress_dir }}"
   when: wp_advanced is defined
 
 - name: Install WordPress plugins
+  become: true
+  become_user: "{{ remote_deploy_user }}"
   command: "wp plugin install {{ item }} --activate"
   args:
     chdir: "{{ remote_wordpress_dir }}"
-  with_items: wordpress_plugins
+  with_items: "{{ wordpress_plugins }}"
   when: wp_advanced is defined
 
 - name: Download WordPress dummy data
+  become: true
+  become_user: "{{ remote_deploy_user }}"
   get_url:
     url: https://raw.githubusercontent.com/manovotny/wptest/master/wptest.xml
     dest: "{{ remote_wordpress_dir }}/wptest.xml"
   when: wp_advanced is defined
 
 - name: Import WordPress dummy data
+  become: true
+  become_user: "{{ remote_deploy_user }}"
   command: "wp import {{ item }} --authors=create"
   args:
     chdir: "{{ remote_wordpress_dir }}"

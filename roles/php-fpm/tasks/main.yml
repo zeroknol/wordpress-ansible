@@ -1,25 +1,25 @@
 ---
 
-- name: Install PHP-FPM v5.6
+- name: Install PHP-FPM
   apt: name="{{ item }}" state=present force=yes
   with_items:
-  - php5-fpm
+  - php-fpm
 
 - name: Disable PHP-FPM from starting on boot
-  service: name=php5-fpm state=stopped enabled=no
+  service: name=php7.0-fpm state=stopped enabled=no
 
 - name: Create socket directory
-  file: path=/var/run/php5-fpm/ state=directory
+  file: path=/var/run/php-fpm/ state=directory
 
 - name: Disable default pool
-  command: mv /etc/php5/fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.disabled creates=/etc/php5/fpm/pool.d/www.disabled
+  command: mv /etc/php/7.0/fpm/pool.d/www.conf /etc/php/7.0/fpm/pool.d/www.conf.disabled creates=/etc/php/7.0/fpm/pool.d/www.conf.disabled
 
 - name: Add php.ini template
-  template: src=php.ini.j2 dest=/etc/php5/fpm/php.ini
+  template: src=php.ini.j2 dest=/etc/php/7.0/fpm/php.ini
 
 - name: Copy php-fpm configuration
-  template: src="php-fpm.conf.j2" dest="/etc/php5/fpm/pool.d/wordpress.conf"
+  template: src="php-fpm.conf.j2" dest="/etc/php/7.0/fpm/pool.d/wordpress.conf"
 
 - name: Start PHP-FPM
-  service: name=php5-fpm state=started
+  service: name=php7.0-fpm state=started
   when: fpm_start is defined

@@ -3,6 +3,8 @@ remote_deploy_user: deploy
 remote_deploy_group: deploy
 remote_deploy_home: /home/deploy
 ssh_key_pub_path: /Users/lamosty/.ssh/id_rsa.pub
+# User with sudo access without password (can be same as deploy user)
+sudo_user: amit
 
 # role: wordpress-install
 remote_www_dir: "{{ remote_deploy_home}}/projects"
@@ -13,7 +15,7 @@ wordpress_db_user_pass: deploypass
 wordpress_db_prefix: wp_
 wordpress_home_url: http://example.com
 wordpress_site_title: Test Site
-wordpress_admin_user: admin
+wordpress_admin_user: deploy
 wordpress_admin_user_pass: adminpass
 wordpress_admin_email: email@example.com
 
